@@ -15,7 +15,7 @@ const signupSchema = z
     password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
     role: z.enum(['public', 'doctor', 'student']),
-    age: z.coerce.number().int().min(1, 'Age is required').max(120, 'Age must be valid'),
+    age: z.number().int().min(1, 'Age is required').max(120, 'Age must be valid'),
     gender: z.string().min(1, 'Gender is required'),
     phone: z.string().min(7, 'Phone is required').max(30, 'Phone is too long'),
     state: z.string().optional(),
@@ -221,7 +221,7 @@ export default function SignupPage() {
                 <div>
                   <label className="mb-1 block text-sm font-medium text-gray-700">Age</label>
                   <input
-                    {...register('age')}
+                    {...register('age', { valueAsNumber: true })}
                     type="number"
                     min={1}
                     max={120}

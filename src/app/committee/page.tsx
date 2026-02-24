@@ -427,11 +427,6 @@ export default async function CommitteePage() {
                               State: {member.state}
                             </span>
                           )}
-                          {tier === 'district' && member.district && (
-                            <span className="inline-flex items-center rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 px-2.5 py-1">
-                              District: {member.district}
-                            </span>
-                          )}
                         </div>
                       </article>
                     ))}

@@ -36,47 +36,51 @@ function normalizeTier(value: unknown) {
 }
 
 function mapCommitteeRows(rows: Record<string, unknown>[] | null | undefined): NationalMember[] {
-  return (rows ?? [])
-    .map((row, index) => {
-      const tier = normalizeTier(row.tier ?? row.level ?? row.committee_tier)
-      if (tier !== 'national') return null
+  const mapped: NationalMember[] = []
 
-      const status = readString(row.status)
-      const approvalStatus = readString(row.approval_status)
-      if (status && !isVerifiedStatusValue(status) && approvalStatus && !isVerifiedStatusValue(approvalStatus)) {
-        return null
-      }
+  for (const [index, row] of (rows ?? []).entries()) {
+    const tier = normalizeTier(row.tier ?? row.level ?? row.committee_tier)
+    if (tier !== 'national') continue
 
-      return {
-        id: readString(row.id) || `national-${index}`,
-        full_name: readString(row.full_name) || readString(row.name) || 'Unnamed Member',
-        designation:
-          readString(row.designation) || readString(row.title) || readString(row.position) || 'National Member',
-        state: readString(row.state),
-        rank: readRank(row.rank) || readRank(row.position_rank) || readRank(row.committee_rank),
-        avatar_url: readString(row.avatar_url) || readString(row.photo_url),
-      } satisfies NationalMember
+    const status = readString(row.status)
+    const approvalStatus = readString(row.approval_status)
+    if (status && !isVerifiedStatusValue(status) && approvalStatus && !isVerifiedStatusValue(approvalStatus)) {
+      continue
+    }
+
+    mapped.push({
+      id: readString(row.id) || `national-${index}`,
+      full_name: readString(row.full_name) || readString(row.name) || 'Unnamed Member',
+      designation:
+        readString(row.designation) || readString(row.title) || readString(row.position) || 'National Member',
+      state: readString(row.state),
+      rank: readRank(row.rank) || readRank(row.position_rank) || readRank(row.committee_rank),
+      avatar_url: readString(row.avatar_url) || readString(row.photo_url),
     })
-    .filter((member): member is NationalMember => member !== null)
+  }
+
+  return mapped
 }
 
 function mapProfileRows(rows: Record<string, unknown>[] | null | undefined): NationalMember[] {
-  return (rows ?? [])
-    .map((row) => {
-      const id = readString(row.id)
-      const full_name = readString(row.full_name)
-      if (!id || !full_name) return null
+  const mapped: NationalMember[] = []
 
-      return {
-        id,
-        full_name,
-        designation: readString(row.specialization) || 'National Advisor',
-        state: readString(row.state),
-        rank: null,
-        avatar_url: readString(row.avatar_url),
-      } satisfies NationalMember
+  for (const row of rows ?? []) {
+    const id = readString(row.id)
+    const full_name = readString(row.full_name)
+    if (!id || !full_name) continue
+
+    mapped.push({
+      id,
+      full_name,
+      designation: readString(row.specialization) || 'National Advisor',
+      state: readString(row.state),
+      rank: null,
+      avatar_url: readString(row.avatar_url),
     })
-    .filter((member): member is NationalMember => member !== null)
+  }
+
+  return mapped
 }
 
 function isMissingSchemaError(errorMessage: string | undefined) {
