@@ -28,6 +28,9 @@ export default function Navbar({ user, isAdmin }: NavbarProps) {
           <Link href="/directory" className="text-white hover:text-blue-300">
             Directory
           </Link>
+          <Link href="/committee" className="text-white hover:text-blue-300">
+            Committee
+          </Link>
           {user && (
             <Link href="/dashboard" className="text-white hover:text-blue-300">
               Dashboard

@@ -34,3 +34,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Database Migration (Committee)
+
+To enable committee CRUD and public committee display, run this SQL in Supabase SQL Editor:
+
+`supabase/migrations/20260221_create_committee_members.sql`
+`supabase/migrations/20260221_add_committee_members_user_id.sql`
+
+This migration creates:
+
+- `public.committee_members` table
+- optional `user_id` linkage to `profiles` (for selecting members directly from doctors)
+- rank/location constraints for national/state/district tiers
+- indexes for tier/rank filtering
+- `updated_at` trigger
+- RLS policies:
+  - public can read approved committee members
+  - only admins can insert/update/delete

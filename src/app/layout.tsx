@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { User } from '@supabase/supabase-js'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
@@ -17,23 +18,29 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createClient()
-
-  // Fetch user session
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // Check if user is admin
+  let user: User | null = null
   let isAdmin = false
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
-    
-    isAdmin = profile?.role === 'admin'
+
+  try {
+    const supabase = await createClient()
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser()
+    user = authUser
+
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle()
+
+      isAdmin = profile?.role === 'admin'
+    }
+  } catch (error) {
+    console.error('Root layout auth check failed:', error)
+    user = null
+    isAdmin = false
   }
   return (
     <html lang="en">

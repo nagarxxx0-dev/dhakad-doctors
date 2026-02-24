@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { CreditCard, Settings, UserCircle } from 'lucide-react'
 
 export default async function DashboardPage() {
@@ -19,13 +20,31 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Welcome, {profile?.full_name || user.email}
-        </h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Manage your profile, view your ID card, and connect with the community.
-        </p>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-900">
+          {profile?.avatar_url ? (
+            <Image
+              src={profile.avatar_url}
+              alt={profile?.full_name || 'Profile'}
+              fill
+              sizes="64px"
+              unoptimized
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-xl font-bold text-gray-500">
+              {(profile?.full_name || user.email || 'U').charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Welcome, {profile?.full_name || user.email}
+          </h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
+            Manage your profile, view your ID card, and connect with the community.
+          </p>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

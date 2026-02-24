@@ -24,3 +24,26 @@ body {
   background-color: var(--background);
   color: var(--foreground);
 }
+
+@media print {
+  #main-navbar {
+    display: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  main {
+    padding-top: 0 !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  .id-card-area {
+    margin-top: 0 !important;
+  }
+}
